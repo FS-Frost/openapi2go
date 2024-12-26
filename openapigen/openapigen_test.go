@@ -1,9 +1,9 @@
 package openapigen_test
 
 import (
-	"openapi2go/openapigen"
 	"testing"
 
+	"github.com/FS-Frost/openapi2go/openapigen"
 	"github.com/stretchr/testify/require"
 )
 

@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"openapi2go/openapigen"
 	"os"
 	"path"
 	"strings"
 
 	"go/format"
 
+	"github.com/FS-Frost/openapi2go/openapigen"
 	"github.com/ettle/strcase"
 	"github.com/getkin/kin-openapi/openapi3"
 )
