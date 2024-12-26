@@ -1,4 +1,4 @@
-module openapi2go
+module github.com/FS-Frost/openapi2go
 
 go 1.23.4
 
