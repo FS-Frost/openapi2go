@@ -15,7 +15,7 @@ import (
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Println("USAGE:\ngo run main.go spec1.yml [specN.yml] outDir")
+		fmt.Println("USAGE:\nopenapi2go spec1.yml [specN.yml] outDir")
 		os.Exit(1)
 	}
 
