@@ -21,7 +21,7 @@ type Field struct {
 	Fields   []Field
 }
 
-func GenerateGetterHeadersQuery(fnName string, structName string, fields []Field) string {
+func GenerateGetterHeaders(fnName string, structName string, fields []Field) string {
 	code := fmt.Sprintf(`
 		func %s(c *gin.Context) (%s, error) {
 			data := %s{}
@@ -53,7 +53,7 @@ func GenerateGetterHeadersQuery(fnName string, structName string, fields []Field
 				code += fmt.Sprintf(`
 					lowerStringValue := strings.ToLower(stringValue)
 					if lowerStringValue != "true" && lowerStringValue != "false" {
-						return data, fmt.Errorf("error al obtener header booleano \"%s\": %%v", err)
+						return data, fmt.Errorf("error al obtener header booleano \"%s\"")
 					}
 
 					%s := lowerStringValue == "true"
@@ -67,6 +67,73 @@ func GenerateGetterHeadersQuery(fnName string, structName string, fields []Field
 					%s, err := strconv.Atoi(stringValue)
 					if err != nil {
 						return data, fmt.Errorf("error al obtener header numérico \"%s\": %%v", err)
+					}
+
+					data.%s = %s%s
+				`, field.Name, field.JsonName, field.Name, pointerPrefix, field.Name)
+				break
+			}
+		default:
+			{
+				code += fmt.Sprintf("\n  data.%s = %sstringValue", field.Name, pointerPrefix)
+				break
+			}
+		}
+
+		code += "\n"
+	}
+
+	code += "\n  return data, nil"
+	code += "\n}\n"
+	return code
+}
+
+func GenerateGetterQuery(fnName string, structName string, fields []Field) string {
+	code := fmt.Sprintf(`
+		func %s(c *gin.Context) (%s, error) {
+			data := %s{}
+			stringValue := ""
+	`, fnName, structName, structName)
+
+	for _, field := range fields {
+		code += "\n"
+		code += fmt.Sprintf(`  stringValue = c.Query("%s")`, field.JsonName)
+
+		if field.Required {
+			code += fmt.Sprintf(`
+				if stringValue == "" {
+					return data, fmt.Errorf("query param no encontrado: \"%s\"")
+				}
+			`, field.JsonName)
+		}
+
+		fmt.Println(field.Name, field.Type, field.Required)
+
+		pointerPrefix := ""
+		if !field.Required {
+			pointerPrefix = "&"
+		}
+
+		switch field.Type {
+		case "bool":
+			{
+				code += fmt.Sprintf(`
+					lowerStringValue := strings.ToLower(stringValue)
+					if lowerStringValue != "true" && lowerStringValue != "false" {
+						return data, fmt.Errorf("error al obtener query param booleano \"%s\"")
+					}
+
+					%s := lowerStringValue == "true"
+					data.%s = %s%s
+				`, field.JsonName, field.Name, field.Name, pointerPrefix, field.Name)
+				break
+			}
+		case "int":
+			{
+				code += fmt.Sprintf(`
+					%s, err := strconv.Atoi(stringValue)
+					if err != nil {
+						return data, fmt.Errorf("error al obtener query param numérico \"%s\": %%v", err)
 					}
 
 					data.%s = %s%s
@@ -271,7 +338,7 @@ func ParseOperation(prefix string, operation *openapi3.Operation) (string, error
 		buf.WriteString(codeHeaders)
 
 		nameGetterHeaders := "GetHeaders_" + prefix
-		codeGetterHeaders := GenerateGetterHeadersQuery(nameGetterHeaders, nameStructHeaders, headerFields)
+		codeGetterHeaders := GenerateGetterHeaders(nameGetterHeaders, nameStructHeaders, headerFields)
 		buf.WriteString(codeGetterHeaders)
 	}
 
@@ -281,7 +348,7 @@ func ParseOperation(prefix string, operation *openapi3.Operation) (string, error
 		buf.WriteString(codeQuery)
 
 		nameGetterQuery := "GetQuery_" + prefix
-		codeGetterQuery := GenerateGetterHeadersQuery(nameGetterQuery, nameStructQuery, queryFields)
+		codeGetterQuery := GenerateGetterQuery(nameGetterQuery, nameStructQuery, queryFields)
 		buf.WriteString(codeGetterQuery)
 	}
 
