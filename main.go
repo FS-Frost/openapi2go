@@ -46,11 +46,11 @@ func main() {
 
 			for operationName, operation := range docPath.Operations() {
 				prefix := strcase.ToCamel(doc.Info.Title)
-				prefix += "_" + pathKey
+				prefix += pathKey
 				prefix = strings.ReplaceAll(prefix, "/", "_")
+				prefix = fmt.Sprintf("%s_%s", prefix, operationName)
 				prefix = strcase.ToCamel(prefix)
 				prefix = openapigen.UpperCaseFirstLetter(prefix)
-				prefix = fmt.Sprintf("%s_%s", prefix, operationName)
 				code, err := openapigen.ParseOperation(prefix, operation)
 				if err != nil {
 					if code != "" {
