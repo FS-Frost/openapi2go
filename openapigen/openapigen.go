@@ -209,11 +209,14 @@ func translateTypeToGo(t string) string {
 	switch t {
 	case "integer":
 		return "int"
-	case "float":
+	case "float", "number":
 		return "float64"
 	case "boolean":
 		return "bool"
 	default:
+		// string
+		// array
+		// object
 		return t
 	}
 }

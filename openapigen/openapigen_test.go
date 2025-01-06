@@ -7,30 +7,47 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRequiredFieldToString(t *testing.T) {
-	field := openapigen.Field{
-		Name:     "SomeField",
-		Type:     "integer",
-		JsonName: "some_field",
-		Required: true,
-		Fields:   []openapigen.Field{},
+func TestFieldToString(t *testing.T) {
+	type TestCase struct {
+		Field        openapigen.Field
+		ExpectedCode string
 	}
 
-	actualCode := openapigen.FieldToString(field)
-	expectedCode := "SomeField int `json:\"some_field\"`"
-	require.Equal(t, expectedCode, actualCode)
-}
-
-func TestOptionalFieldToString(t *testing.T) {
-	field := openapigen.Field{
-		Name:     "SomeField",
-		Type:     "integer",
-		JsonName: "some_field",
-		Required: false,
-		Fields:   []openapigen.Field{},
+	testCases := []TestCase{
+		{
+			Field: openapigen.Field{
+				Name:     "SomeField",
+				Type:     "integer",
+				JsonName: "some_field",
+				Required: true,
+				Fields:   []openapigen.Field{},
+			},
+			ExpectedCode: "SomeField int `json:\"some_field\"`",
+		},
+		{
+			Field: openapigen.Field{
+				Name:     "SomeField",
+				Type:     "integer",
+				JsonName: "some_field",
+				Required: false,
+				Fields:   []openapigen.Field{},
+			},
+			ExpectedCode: "SomeField *int `json:\"some_field\"`",
+		},
+		{
+			Field: openapigen.Field{
+				Name:     "SomeField",
+				Type:     "number",
+				JsonName: "some_field",
+				Required: true,
+				Fields:   []openapigen.Field{},
+			},
+			ExpectedCode: "SomeField float64 `json:\"some_field\"`",
+		},
 	}
 
-	actualCode := openapigen.FieldToString(field)
-	expectedCode := "SomeField *int `json:\"some_field\"`"
-	require.Equal(t, expectedCode, actualCode)
+	for _, testCase := range testCases {
+		actualCode := openapigen.FieldToString(testCase.Field)
+		require.Equal(t, testCase.ExpectedCode, actualCode)
+	}
 }
