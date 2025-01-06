@@ -29,7 +29,7 @@ func main() {
 
 	for i := 1; i < len(os.Args); i++ {
 		sourcePath := os.Args[i]
-		if path.Ext(sourcePath) != ".yaml" || path.Ext(sourcePath) != ".json" {
+		if path.Ext(sourcePath) != ".yaml" && path.Ext(sourcePath) != ".json" {
 			continue
 		}
 
