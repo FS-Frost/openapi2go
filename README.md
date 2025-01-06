@@ -21,3 +21,4 @@ go install github.com/FS-Frost/openapi2go@latest
 ```sh
 openapi2go spec1.yml [specN.yml] outDir
 ```
+
