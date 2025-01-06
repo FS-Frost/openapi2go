@@ -333,37 +333,37 @@ func ParseOperation(prefix string, operation *openapi3.Operation) (string, error
 	buf.WriteString(imports)
 
 	if len(headerFields) > 0 {
-		nameStructHeaders := prefix + "_Headers"
+		nameStructHeaders := prefix + "Headers"
 		codeHeaders := GenerateStructCode(nameStructHeaders, headerFields)
 		buf.WriteString(codeHeaders)
 
-		nameGetterHeaders := "GetHeaders_" + prefix
+		nameGetterHeaders := "GetHeaders" + prefix
 		codeGetterHeaders := GenerateGetterHeaders(nameGetterHeaders, nameStructHeaders, headerFields)
 		buf.WriteString(codeGetterHeaders)
 	}
 
 	if len(queryFields) > 0 {
-		nameStructQuery := prefix + "_Query"
+		nameStructQuery := prefix + "Query"
 		codeQuery := GenerateStructCode(nameStructQuery, queryFields)
 		buf.WriteString(codeQuery)
 
-		nameGetterQuery := "GetQuery_" + prefix
+		nameGetterQuery := "GetQuery" + prefix
 		codeGetterQuery := GenerateGetterQuery(nameGetterQuery, nameStructQuery, queryFields)
 		buf.WriteString(codeGetterQuery)
 	}
 
 	if len(bodyFields) > 0 {
-		nameStructBody := prefix + "_Body"
+		nameStructBody := prefix + "Body"
 		codeBody := GenerateStructCode(nameStructBody, bodyFields)
 		buf.WriteString(codeBody)
 
-		nameGetterBody := "GetBody_" + prefix
+		nameGetterBody := "GetBody" + prefix
 		codeGetterBody := GenerateGetterBody(nameGetterBody, nameStructBody)
 		buf.WriteString(codeGetterBody)
 	}
 
 	if len(responseFields) > 0 {
-		nameStructResponse := prefix + "_Response"
+		nameStructResponse := prefix + "Response"
 		codeResponse := GenerateStructCode(nameStructResponse, responseFields)
 		buf.WriteString(codeResponse)
 	}
