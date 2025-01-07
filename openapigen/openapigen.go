@@ -466,6 +466,8 @@ func parseField(paramOriginalName string, param *openapi3.SchemaRef, requiredPar
 		field.Fields = append(field.Fields, subfield)
 	}
 
+	// TODO: remove
+	field.Required = true
 	return field
 }
 
